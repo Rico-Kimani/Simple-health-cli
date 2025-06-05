@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "health_cli"
+version = "0.1.0"
+description = "A CLI app for managing health goals, meals, and reports."
+authors = [{ name = "Your Name", email = "you@example.com" }]
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+dependencies = [
+    "typer>=0.9.0",
+    "SQLAlchemy>=2.0",
+    "rich",          # if used
+    # add others if needed
+]
+
+[project.scripts]
+myapp = "health_cli.cli:app"

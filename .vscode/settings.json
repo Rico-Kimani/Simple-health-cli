@@ -1,0 +1,4 @@
+{
+  "python.analysis.extraPaths": ["./health_cli"],
+  "python.pythonPath": ".venv/bin/python"
+}

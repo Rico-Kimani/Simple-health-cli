@@ -16,7 +16,7 @@ class FoodEntry(Base):
 
     user = relationship("User", back_populates="food_entries")
 
-# Add this to users_entry.py if not already:
+
 # food_entries = relationship("FoodEntry", back_populates="user")
 
 

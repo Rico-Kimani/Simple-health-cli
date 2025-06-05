@@ -1,3 +1,5 @@
+# commands/user_commands.py
+
 from health_cli.db.config import SessionLocal
 from health_cli.models.users_entry import User
 import typer
@@ -27,6 +29,25 @@ def get_user(user_id: int):
         typer.echo(f"User found:\nName: {user.name}\nEmail: {user.email}\nAge: {user.age}")
     else:
         typer.echo("❌ User not found.")
+    db.close()
+
+def update_user(user_id: int, name: str = None, email: str = None, age: int = None):
+    db = SessionLocal()
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        typer.echo("❌ User not found.")
+        db.close()
+        return
+
+    if name:
+        user.name = name
+    if email:
+        user.email = email
+    if age:
+        user.age = age
+
+    db.commit()
+    typer.echo(f"✅ Updated user {user.name} (ID: {user.id})")
     db.close()
 
 def delete_user(user_id: int):

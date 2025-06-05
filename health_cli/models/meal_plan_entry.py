@@ -5,6 +5,7 @@ from health_cli.models.users_entry import User
 
 class MealPlan(Base):
     __tablename__ = "mealplans"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
