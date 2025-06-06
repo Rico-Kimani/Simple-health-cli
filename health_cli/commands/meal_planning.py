@@ -1,8 +1,7 @@
 import typer
-from health_cli.db.config import SessionLocal
 from health_cli.db.database import get_session
 from health_cli.models.meal_plan_entry import MealPlan
-from models.meal_plan_entry import create_meal_plan, update_meal_plan, list_meal_plans
+from health_cli.models.meal_plan_entry import create_meal_plan, update_meal_plan, list_meal_plans
 
 meal_app = typer.Typer()
 
@@ -52,7 +51,7 @@ def list_meals(user: str):
 @meal_app.command("add-daily")
 def add_daily_meal(user_id: int, day: str, meal: str):
     """Add a single meal entry for a specific day."""
-    db = SessionLocal()
+    db = get_session()
     meal_plan = MealPlan(user_id=user_id, day=day, meal=meal)
     db.add(meal_plan)
     db.commit()
@@ -63,7 +62,7 @@ def add_daily_meal(user_id: int, day: str, meal: str):
 @meal_app.command("update-daily")
 def update_daily_meal(meal_plan_id: int, day: str = None, meal: str = None):
     """Update a daily meal plan entry."""
-    db = SessionLocal()
+    db = get_session()
     plan = db.query(MealPlan).filter(MealPlan.id == meal_plan_id).first()
     if not plan:
         typer.echo("❌ Meal plan not found.")
@@ -79,7 +78,7 @@ def update_daily_meal(meal_plan_id: int, day: str = None, meal: str = None):
 @meal_app.command("delete")
 def delete_meal(meal_plan_id: int):
     """Delete a meal plan entry by ID."""
-    db = SessionLocal()
+    db = get_session()
     plan = db.query(MealPlan).filter(MealPlan.id == meal_plan_id).first()
     if not plan:
         typer.echo("❌ Meal plan not found.")

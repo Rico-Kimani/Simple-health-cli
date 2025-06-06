@@ -1,12 +1,10 @@
-# health_cli/models/__init__.py
-
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from health_cli.db.database import get_session
+from health_cli.db.database import Base
 
-engine = create_engine('sqlite:///health.db')  # or your database URL
+engine = create_engine('sqlite:///health.db')  
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
 
 # Create a session instance
-session = SessionLocal()
+session = get_session()

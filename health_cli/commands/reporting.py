@@ -1,5 +1,6 @@
 import typer
 from datetime import datetime
+from health_cli.utils.parsers import parse_date
 from health_cli.db.database import get_session
 from health_cli.models import food_entry, goals_entry
 
@@ -10,11 +11,7 @@ def daily_report(user: str, date: str):
     """
     View a summary report for a specific date for a user.
     """
-    try:
-        parsed_date = datetime.strptime(date, "%Y-%m-%d").date()
-    except ValueError:
-        typer.echo("❌ Invalid date format. Use YYYY-MM-DD.")
-        raise typer.Exit()
+    parsed_date = parse_date(date)
 
     session = get_session()
     try:

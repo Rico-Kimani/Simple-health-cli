@@ -1,4 +1,5 @@
 import typer
+from sqlalchemy.orm import Session
 from health_cli.commands import user_commands 
 from commands.meal_planning import meal_app
 from commands.goals import goal_app
@@ -15,14 +16,14 @@ app = typer.Typer(help="Health Simplified CLI App")
 # Sub-apps (modular command groups)
 entry_app = entry.entry_app
 goal_app = goals.goal_app
-report_app = reporting.report_app
 meal_app = meal_planning.meal_app
+report_app = reporting.report_app
 
 # Mount subcommands to main app
 app.add_typer(entry_app, name="entry", help="Log daily health data like water, sleep, etc.")
 app.add_typer(goal_app, name="goal", help="Set and manage your health goals")
-app.add_typer(report_app, name="report", help="Generate reports and insights")
 app.add_typer(meal_app, name="meal", help="Plan and track meals")
+app.add_typer(report_app, name="report", help="Generate reports and insights")
 
 
 # User Commands

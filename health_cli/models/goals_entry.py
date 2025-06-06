@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, func
+from sqlalchemy import Column, Integer, ForeignKey, String, func
 from sqlalchemy.orm import relationship
 from datetime import datetime, timedelta
 from health_cli.db.database import Base
@@ -13,6 +13,8 @@ class Goal(Base):
     user_id = Column(Integer, ForeignKey("users.id"), unique=True)
     daily_goal = Column(Integer)
     weekly_goal = Column(Integer)
+    description = Column(String, nullable=True)
+
 
     user = relationship("User", back_populates="goal")
 

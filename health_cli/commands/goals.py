@@ -1,7 +1,8 @@
+# health_cli/commands/goals.py
 import typer
-from health_cli.db.config import SessionLocal
 from health_cli.db.database import get_session
 from health_cli.models.goals_entry import Goal, set_user_goals, get_user_goals, get_calorie_progress
+from health_cli.utils.validation import user_exists  # ✅
 
 goal_app = typer.Typer()
 
@@ -10,6 +11,9 @@ def set_goal(user: str, daily: int, weekly: int):
     """Set daily and weekly calorie goals for a user."""
     session = get_session()
     try:
+        if not user_exists(session, user):
+            typer.echo(f"❌ User '{user}' does not exist.")
+            raise typer.Exit()
         set_user_goals(session, user, daily, weekly)
         typer.echo(f"✅ Goals set for {user}: Daily = {daily}, Weekly = {weekly}")
     except ValueError as e:
@@ -22,6 +26,9 @@ def list_goals(user: str):
     """List a user's calorie goals."""
     session = get_session()
     try:
+        if not user_exists(session, user):
+            typer.echo(f"❌ User '{user}' does not exist.")
+            raise typer.Exit()
         goal = get_user_goals(session, user)
         if goal:
             typer.echo(f"📊 {user}'s Goals — Daily: {goal.daily_goal} kcal, Weekly: {goal.weekly_goal} kcal")
@@ -33,7 +40,7 @@ def list_goals(user: str):
 @goal_app.command("add")
 def add_goal(user_id: int, description: str):
     """Add a new goal for a user."""
-    db = SessionLocal()
+    db = get_session()
     goal = Goal(user_id=user_id, description=description)
     db.add(goal)
     db.commit()
@@ -44,8 +51,11 @@ def add_goal(user_id: int, description: str):
 @goal_app.command("view")
 def view_goal(user_name: str):
     """View calorie goals."""
-    session = SessionLocal()
+    session = get_session()
     try:
+        if not user_exists(session, user_name):
+            typer.echo(f"❌ User '{user_name}' does not exist.")
+            raise typer.Exit()
         goal = get_user_goals(session, user_name)
         if not goal:
             typer.echo("No goals set.")
@@ -57,7 +67,7 @@ def view_goal(user_name: str):
 @goal_app.command("update")
 def update_goal(goal_id: int, description: str):
     """Update a goal's description."""
-    db = SessionLocal()
+    db = get_session()
     goal = db.query(Goal).filter(Goal.id == goal_id).first()
     if not goal:
         typer.echo("❌ Goal not found.")
@@ -70,7 +80,7 @@ def update_goal(goal_id: int, description: str):
 @goal_app.command("delete")
 def delete_goal(goal_id: int):
     """Delete a goal by ID."""
-    db = SessionLocal()
+    db = get_session()
     goal = db.query(Goal).filter(Goal.id == goal_id).first()
     if not goal:
         typer.echo("❌ Goal not found.")
@@ -83,8 +93,11 @@ def delete_goal(goal_id: int):
 @goal_app.command("progress")
 def calorie_progress(user_name: str):
     """View today's and this week's calorie intake compared to goals."""
-    session = SessionLocal()
+    session = get_session()
     try:
+        if not user_exists(session, user_name):
+            typer.echo(f"❌ User '{user_name}' does not exist.")
+            raise typer.Exit()
         data = get_calorie_progress(session, user_name)
         typer.echo(f"\n📊 {user_name}'s Calorie Progress")
         typer.echo(f"Today: {data['daily_total']} / {data['daily_goal']} kcal")

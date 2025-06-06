@@ -1,11 +1,11 @@
 # commands/user_commands.py
 
-from health_cli.db.config import SessionLocal
+from health_cli.db.database import get_session
 from health_cli.models.users_entry import User
 import typer
 
 def create_user(name: str, email: str, age: int):
-    db = SessionLocal()
+    db = get_session()
     user = User(name=name, email=email, age=age)
     db.add(user)
     db.commit()
@@ -14,7 +14,7 @@ def create_user(name: str, email: str, age: int):
     typer.echo(f"✅ User created: {user.name} (ID: {user.id})")
 
 def list_users():
-    db = SessionLocal()
+    db = get_session()
     users = db.query(User).all()
     if not users:
         typer.echo("No users found.")
@@ -23,7 +23,7 @@ def list_users():
     db.close()
 
 def get_user(user_id: int):
-    db = SessionLocal()
+    db = get_session()
     user = db.query(User).filter(User.id == user_id).first()
     if user:
         typer.echo(f"User found:\nName: {user.name}\nEmail: {user.email}\nAge: {user.age}")
@@ -32,7 +32,7 @@ def get_user(user_id: int):
     db.close()
 
 def update_user(user_id: int, name: str = None, email: str = None, age: int = None):
-    db = SessionLocal()
+    db = get_session()
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         typer.echo("❌ User not found.")
@@ -51,7 +51,7 @@ def update_user(user_id: int, name: str = None, email: str = None, age: int = No
     db.close()
 
 def delete_user(user_id: int):
-    db = SessionLocal()
+    db = get_session()
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         typer.echo("❌ User not found.")
